@@ -1,0 +1,12 @@
+name: Assignment 8:Manual Production Deploy 🚀
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-to-prod:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: "Deploying to production"
+        run: echo "✅ Approved! Starting deployment to production."
