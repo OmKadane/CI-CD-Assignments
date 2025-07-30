@@ -1,4 +1,4 @@
-name: Assignment 2:Deploy to GitHub Pages 🌐
+name: Assignment 2:Deploy to GitHub Pages & Notify 🌐
 
 on:
   push:
@@ -15,6 +15,9 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    # This 'outputs' section makes the page URL available to other jobs
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
@@ -24,3 +27,21 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # This is the new job you are adding
+  notify:
+    runs-on: ubuntu-latest
+    needs: deploy # Ensures this job runs only AFTER the 'deploy' job
+    if: success()   # Ensures this job runs only if the 'deploy' job was successful
+    steps:
+      - name: Send Slack notification
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          # This payload is the JSON message sent to Slack
+          payload: |
+            {
+              "text": "✅ Deployment to GitHub Pages succeeded! Site is live at ${{ needs.deploy.outputs.page_url }}"
+            }
+        env:
+          # This securely provides the webhook URL to the action
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
