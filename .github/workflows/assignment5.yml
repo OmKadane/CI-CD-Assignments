@@ -1,0 +1,28 @@
+name: Assignment 5:Build and Push Docker Image 🐳
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Downloads your repository code, including the Dockerfile.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Logs into Docker Hub using the secrets you just created.
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 3: Builds the image from the Dockerfile and pushes it to Docker Hub.
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
