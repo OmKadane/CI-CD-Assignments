@@ -1,0 +1,26 @@
+name: Assignment 10: Multi-Environment Deploy 🌳
+
+on:
+  push:
+    branches:
+      - dev
+      - staging
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev' # Only runs for the 'dev' branch
+    steps:
+      - name: Deploy to Development
+        run: |
+          echo "Deploying to DEV environment..."
+          echo "Branch: ${{ github.ref_name }}"
+
+  deploy-staging:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging' # Only runs for the 'staging' branch
+    steps:
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying to STAGING environment..."
+          echo "Branch: ${{ github.ref_name }}"
