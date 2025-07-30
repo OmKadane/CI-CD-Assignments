@@ -1,0 +1,23 @@
+name: Assignment 9:Deploy to Netlify 🚀
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Downloads your repository code
+      - uses: actions/checkout@v4
+
+      # Step 2: Runs the Netlify CLI to deploy your site
+      - name: Deploy to Netlify
+        uses: netlify/actions/cli@master
+        with:
+          # Tells the CLI to deploy the 'public' folder to production
+          args: deploy --dir=public --prod
+        env:
+          # Securely provides the credentials to the Netlify CLI
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
