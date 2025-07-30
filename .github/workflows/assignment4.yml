@@ -1,0 +1,31 @@
+name: Assignment 4:Upload Image to S3 ☁️
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Downloads your repository code so the workflow can access it.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Logs into AWS using the secrets you created.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Step 3: Finds and uploads the images.
+      - name: Upload valid images to S3
+        run: |
+          for img in *.jpg *.png *.webp; do
+            if [ -f "$img" ]; then
+              echo "Uploading $img to S3..."
+              aws s3 cp "$img" s3://${{ secrets.AWS_S3_BUCKET }}/
+            fi
+          done
